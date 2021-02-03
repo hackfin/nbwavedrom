@@ -11,12 +11,26 @@ def _get_js_path(jsfile):
 def _draw_wavedrom_javascript(data, width):
     style = ""
     if width != None:
-        style = ' style="width: ' + str(int(width)) + 'px'
-    htmldata = '<script>' + open(_get_js_path('wavedromskin.js')).read() + '</script>'
-    htmldata += '<script>' + open(_get_js_path('wavedrom.min.js')).read() + '</script>'
-    htmldata += '<div' + style + '><script type="WaveDrom">' + data + '</script></div>'
-    htmldata += '<script>WaveDrom.ProcessAll();</script>'
-    return IPython.display.HTML(data=htmldata)
+        style = ' style="width: ' + str(int(width)) + 'px"'
+    htmldata = '<div' + style + '><script type="WaveDrom">' + data + '</script></div>'
+    d = IPython.display
+
+    ret = d.HTML(data=htmldata)
+
+    d.display_javascript(
+        d.Javascript(filename=_get_js_path('wavedrom.min.js'))
+    )
+
+    d.display_javascript(
+        d.Javascript(
+            data="WaveDrom.ProcessAll();",
+            lib=[
+                "https://wavedrom.com/skins/narrow.js",
+            ],
+        )
+    )
+
+    return ret
 
 def _draw_wavedrom_phantomjs(data, phantomjs):
     prog = subprocess.Popen([phantomjs, _get_js_path('wavedrom-cli.js'), '-i', '-', '-s', '-'],
