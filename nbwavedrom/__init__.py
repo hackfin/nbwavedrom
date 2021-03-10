@@ -17,20 +17,19 @@ def _draw_wavedrom_javascript(data, width):
 
     ret = d.HTML(data=htmldata)
 
-    d.display_javascript(
-        d.Javascript(filename=_get_js_path('wavedrom.min.js'))
-    )
+    d.display_html(ret)
 
     d.display_javascript(
         d.Javascript(
             data="WaveDrom.ProcessAll();",
             lib=[
+                "https://wavedrom.com/wavedrom.min.js",
                 "https://wavedrom.com/skins/narrow.js",
             ],
         )
     )
 
-    return ret
+    return None
 
 def _draw_wavedrom_phantomjs(data, phantomjs):
     prog = subprocess.Popen([phantomjs, _get_js_path('wavedrom-cli.js'), '-i', '-', '-s', '-'],
